@@ -23,6 +23,9 @@ COPY . .
 # Create directories for uploads and detections if they don't exist
 RUN mkdir -p static/uploads static/detections weights
 
+# Download YOLO model weights during build
+RUN python -c "from ultralytics import YOLO; YOLO('yolov8s.pt'); print('✓ YOLOv8s weights downloaded')"
+
 # Expose port (Railway will set PORT env variable)
 EXPOSE 8080
 
