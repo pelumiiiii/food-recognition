@@ -21,7 +21,17 @@ from dotenv import load_dotenv
 # Load environment variables from .env file
 load_dotenv()
 
-from backend.llama_nutrition import analyze_food_nutrition
+# Import Llama nutrition module (optional)
+try:
+    from backend.llama_nutrition import analyze_food_nutrition
+    LLAMA_AVAILABLE = True
+    print("✓ Llama nutrition module loaded")
+except ImportError as e:
+    LLAMA_AVAILABLE = False
+    print(f"⚠ Llama nutrition not available: {e}")
+    # Fallback: use basic nutrition estimation
+    from backend.food_calories_estimation import get_nutrition_data as analyze_food_nutrition
+
 from backend.claude_health_assessment import get_health_score_from_claude
 from backend.database import (
     add_detection, get_recent_detections, get_detection_by_id, get_stats,
