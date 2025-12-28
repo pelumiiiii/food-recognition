@@ -11,6 +11,7 @@ tqdm
 # Web & API
 flask-cors
 cryptography
+python-dotenv>=0.19.0
 
 # Security packages
 bcrypt>=4.0.1
