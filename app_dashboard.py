@@ -29,8 +29,9 @@ try:
 except ImportError as e:
     LLAMA_AVAILABLE = False
     print(f"⚠ Llama nutrition not available: {e}")
-    # Fallback: use basic nutrition estimation
-    from backend.food_calories_estimation import get_nutrition_data as analyze_food_nutrition
+    # Fallback: return error to trigger generate_basic_nutrition
+    def analyze_food_nutrition(food_items, use_api=False):
+        return {'success': False, 'error': 'Llama nutrition not available'}
 
 from backend.claude_health_assessment import get_health_score_from_claude
 from backend.database import (
