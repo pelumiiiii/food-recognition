@@ -507,6 +507,7 @@ def get_statistics():
 # ============================================================================
 
 @app.route('/api/auth/signup', methods=['POST'])
+@csrf.exempt  # Exempt from CSRF (protected by rate limiting)
 @limiter.limit("5 per hour")  # Limit signups to prevent abuse
 def signup():
     """User signup endpoint."""
@@ -558,6 +559,7 @@ def signup():
 
 
 @app.route('/api/auth/login', methods=['POST'])
+@csrf.exempt  # Exempt from CSRF (protected by rate limiting)
 @limiter.limit("10 per minute")  # Prevent brute force attacks
 def login():
     """User login endpoint."""
@@ -600,6 +602,7 @@ def login():
 
 
 @app.route('/api/auth/google', methods=['POST'])
+@csrf.exempt  # Exempt from CSRF (third-party OAuth)
 def google_auth():
     """Google OAuth login endpoint."""
     try:
@@ -651,6 +654,7 @@ def google_auth():
 
 
 @app.route('/api/auth/guest', methods=['POST'])
+@csrf.exempt  # Exempt from CSRF (protected by rate limiting)
 @limiter.limit("20 per hour")  # Limit guest account creation
 def guest_login():
     """Continue as guest endpoint."""
@@ -678,6 +682,7 @@ def guest_login():
 
 
 @app.route('/api/auth/logout', methods=['POST'])
+@csrf.exempt  # Exempt from CSRF
 def logout():
     """User logout endpoint."""
     session.clear()
