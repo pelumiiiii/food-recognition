@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: food-recognition-db
+    environment:
+      POSTGRES_DB: food_recognition
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Flask Application
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: food-recognition-app
+    ports:
+      - "8080:8080"
+    environment:
+      - PORT=8080
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/food_recognition
+      - SECRET_KEY=${SECRET_KEY:-dev-secret-key-change-in-production}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - FLASK_ENV=development
+    volumes:
+      # Mount code for hot reload during development
+      - .:/app
+      # Persist uploads and detections
+      - ./static/uploads:/app/static/uploads
+      - ./static/detections:/app/static/detections
+      - ./weights:/app/weights
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: gunicorn --bind 0.0.0.0:8080 --workers 2 --timeout 120 --reload app_dashboard:app
+
+volumes:
+  postgres_data:
