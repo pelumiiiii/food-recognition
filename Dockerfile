@@ -23,8 +23,11 @@ COPY . .
 # Create directories for uploads and detections if they don't exist
 RUN mkdir -p static/uploads static/detections weights
 
-# Download YOLO model weights during build
-RUN python -c "from ultralytics import YOLO; YOLO('yolov8s.pt'); print('✓ YOLOv8s weights downloaded')"
+# Download YOLO model weights to the correct location
+RUN apt-get update && apt-get install -y wget && \
+    wget -q https://github.com/ultralytics/assets/releases/download/v0.0.0/yolov8s.pt -O weights/yolov8s.pt && \
+    echo "✓ YOLOv8s weights downloaded to weights/yolov8s.pt" && \
+    rm -rf /var/lib/apt/lists/*
 
 # Expose port (Railway will set PORT env variable)
 EXPOSE 8080
