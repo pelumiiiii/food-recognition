@@ -23,10 +23,10 @@ COPY . .
 # Create directories for uploads and detections if they don't exist
 RUN mkdir -p static/uploads static/detections weights
 
-# Download YOLO model weights to the correct location
+# Download custom food-trained YOLO model weights
 RUN apt-get update && apt-get install -y wget && \
-    wget -q https://github.com/ultralytics/assets/releases/download/v0.0.0/yolov8s.pt -O weights/yolov8s.pt && \
-    echo "✓ YOLOv8s weights downloaded to weights/yolov8s.pt" && \
+    wget -q https://github.com/pelumiiiii/food-recognition/releases/download/v1.0.0-models/yolov8s.pt -O weights/yolov8s.pt && \
+    echo "✓ Custom YOLOv8s food detection model downloaded to weights/yolov8s.pt" && \
     rm -rf /var/lib/apt/lists/*
 
 # Expose port (Railway will set PORT env variable)
